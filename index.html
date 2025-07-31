@@ -1,116 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth Form with Link Buttons</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-        
-        .auth-container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 350px;
-            text-align: center;
-        }
-        
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .auth-btn {
-            padding: 12px 25px;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            flex: 1;
-            text-align: center;
-            display: inline-block;
-            border: none;
-            font-size: 16px;
-        }
-        
-        .login-btn {
-            background-color: #4285f4;
-            color: white;
-        }
-        
-        .login-btn:hover {
-            background-color: #3367d6;
-            transform: translateY(-2px);
-        }
-        
-        .signup-btn {
-            background-color: #34a853;
-            color: white;
-        }
-        
-        .signup-btn:hover {
-            background-color: #2d9248;
-            transform: translateY(-2px);
-        }
-        
-        .divider {
-            margin: 25px 0;
-            position: relative;
-            color: #999;
-        }
-        
-        .divider::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background-color: #eee;
-            z-index: -1;
-        }
-        
-        .divider span {
-            background: white;
-            padding: 0 15px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auth + Registration Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      padding: 30px;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .auth-section,
+    .form-container {
+      display: none;
+    }
+
+    .auth-section.active,
+    .form-container.active {
+      display: block;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .auth-btn {
+      padding: 12px 25px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 16px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .login-btn {
+      background-color: #4285f4;
+      color: white;
+    }
+
+    .login-btn:hover {
+      background-color: #3367d6;
+      transform: translateY(-2px);
+    }
+
+    .signup-btn {
+      background-color: #34a853;
+      color: white;
+    }
+
+    .signup-btn:hover {
+      background-color: #2d9248;
+      transform: translateY(-2px);
+    }
+
+    .divider {
+      margin: 25px 0;
+      position: relative;
+      color: #999;
+      text-align: center;
+    }
+
+    .divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: #eee;
+      z-index: -1;
+    }
+
+    .divider span {
+      background: white;
+      padding: 0 15px;
+      position: relative;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-family: inherit;
+    }
+
+    .dob-selects {
+      display: flex;
+      gap: 10px;
+    }
+
+    .dob-selects select {
+      flex: 1;
+    }
+
+    .gender-options {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-top: 5px;
+    }
+
+    .gender-options label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: normal;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="auth-container">
-        <h2>Welcome to Our Site</h2>
-        <p>Please choose an option to continue</p>
-        
-        <div class="auth-buttons">
-            <a href="/login" class="auth-btn login-btn">Login</a>
-            <a href="https://raw.githubusercontent.com/Harsha-020207/shadowforce/refs/heads/main/exp2.html" class="auth-btn signup-btn">Sign Up</a>
 
-        </div>
-        
-        <div class="divider">
-            <span>OR</span>
-        </div>
-        
-        <div class="social-auth">
-            <!-- Optional: Add social login buttons here -->
-            <button style="width:100%; padding:10px; margin-bottom:10px; background:#fff; border:1px solid #ddd; border-radius:4px; cursor:pointer;">
-                Continue with Google
-            </button>
-            <button style="width:100%; padding:10px; background:#fff; border:1px solid #ddd; border-radius:4px; cursor:pointer;">
-                Continue with Facebook
-            </button>
-        </div>
+<div class="container">
+
+  <!-- Auth Section -->
+  <div class="auth-section active" id="authSection">
+    <h2>Welcome to Our Site</h2>
+    <p>Please choose an option to continue</p>
+
+    <div class="auth-buttons">
+      <button class="auth-btn login-btn">Login</button>
+      <button class="auth-btn signup-btn" onclick="showForm()">Sign Up</button>
     </div>
+
+    <div class="divider">
+      <span>OR</span>
+    </div>
+
+    <div class="social-auth">
+      <button style="width:100%; padding:10px; margin-bottom:10px; background:#fff; border:1px solid #ddd; border-radius:4px; cursor:pointer;">
+        Continue with Google
+      </button>
+      <button style="width:100%; padding:10px; background:#fff; border:1px solid #ddd; border-radius:4px; cursor:pointer;">
+        Continue with Facebook
+      </button>
+    </div>
+  </div>
+
+  <!-- Registration Form -->
+  <div class="form-container" id="formContainer">
+    <h2>Registration Form</h2>
+    <form id="regForm">
+      <div class="form-group">
+        <label for="fname">First Name</label>
+        <input type="text" id="fname" required />
+      </div>
+      <div class="form-group">
+        <label for="lname">Last Name</label>
+        <input type="text" id="lname" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email ID</label>
+        <input type="email" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <textarea id="address" rows="10" maxlength="5000" required placeholder="Enter your full address..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Date of Birth</label>
+        <div class="dob-selects">
+          <select id="day" required></select>
+          <select id="month" required></select>
+          <select id="year" required></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <div class="gender-options">
+          <label><input type="radio" name="gender" value="Male" required> Male</label>
+          <label><input type="radio" name="gender" value="Female"> Female</label>
+          <label><input type="radio" name="gender" value="Other"> Other</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required />
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" required />
+      </div>
+      <p class="error" id="errorMsg"></p>
+      <button type="submit">Register</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Show registration form
+  function showForm() {
+    document.getElementById('authSection').classList.remove('active');
+    document.getElementById('formContainer').classList.add('active');
+  }
+
+  // Uppercase name inputs
+  function toUppercase(str) {
+    return str.toUpperCase();
+  }
+
+  document.getElementById('fname').addEventListener('input', (e) => {
+    e.target.value = toUppercase(e.target.value);
+  });
+  document.getElementById('lname').addEventListener('input', (e) => {
+    e.target.value = toUppercase(e.target.value);
+  });
+
+  // Populate DOB
+  const day = document.getElementById('day');
+  const month = document.getElementById('month');
+  const year = document.getElementById('year');
+
+  for (let d = 1; d <= 31; d++) {
+    day.innerHTML += `<option value="${d}">${d}</option>`;
+  }
+
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  months.forEach((m, i) => {
+    month.innerHTML += `<option value="${i + 1}">${m}</option>`;
+  });
+
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y >= 1900; y--) {
+    year.innerHTML += `<option value="${y}">${y}</option>`;
+  }
+
+  // Form validation
+  const form = document.getElementById('regForm');
+  const errorMsg = document.getElementById('errorMsg');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fnameField = document.getElementById('fname');
+    const lnameField = document.getElementById('lname');
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirmPassword').value;
+    const gender = form.querySelector('input[name="gender"]:checked');
+
+    fnameField.value = toUppercase(fnameField.value.trim());
+    lnameField.value = toUppercase(lnameField.value.trim());
+
+    if (password.length < 6) {
+      errorMsg.textContent = 'Password must be at least 6 characters.';
+      return;
+    }
+
+    if (password !== confirm) {
+      errorMsg.textContent = 'Passwords do not match.';
+      return;
+    }
+
+    if (!gender) {
+      errorMsg.textContent = 'Please select a gender.';
+      return;
+    }
+
+    errorMsg.textContent = '';
+    alert(`Welcome, ${fnameField.value} ${lnameField.value}!\nUsername: ${document.getElementById("username").value}\nGender: ${gender.value}\nRegistration successful.`);
+    form.reset();
+  });
+</script>
+
 </body>
 </html>
