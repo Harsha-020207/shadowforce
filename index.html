@@ -1,359 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Auth Form</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fdfeff;
-      padding: 30px;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      overflow-y: auto;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Facts Time</title>
+<style>
+  body { margin:0; background:#e0e0e0; font-family:Georgia, serif; color:#000; }
+  header {
+    background: transparent; color:#000; text-align:center;
+    padding:20px; font-size:2.5rem; text-transform:uppercase;
+    letter-spacing:2px; position:relative;
+  }
+  /* Top-right auth buttons */
+  .auth-buttons { position:absolute; top:20px; right:20px; }
+  .auth-buttons button {
+    margin-left:8px; padding:8px 16px; font-size:0.9rem;
+    font-weight:bold; border:none; border-radius:999px;
+    background:#1e7b78f3; color:white; cursor:pointer;
+    transition: all 0.3s ease;
+  }
+  .auth-buttons button:hover { background:#145957; }
 
-    .section {
-      display: none;
-      background: #6fafc2;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-    }
+  #date { text-align:center; font-size:1rem; margin-bottom:10px; }
+  .menu { text-align:center; padding:20px 10px; }
+  .menu button {
+    margin:5px 10px; padding:10px 24px; font-size:1rem; font-weight:bold;
+    border:none; background:#fff; color:#000; cursor:pointer; border-radius:999px;
+    transition: all 0.3s ease; box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  }
+  .menu button:hover, .menu button.active { background:#1e7b78f3; color:#fff; box-shadow:0 0 12px #1e7b78f3; }
 
-    .section.active {
-      display: block;
-    }
+  #news-container {
+    max-width:900px; margin:30px auto; background:rgba(255,255,255,0.7);
+    padding:40px 30px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1);
+    min-height:200px; display:none;
+  }
+  .article { margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid rgba(0,0,0,0.08); }
+  .article:last-child { border-bottom:none; }
+  .article h3 { font-size:1.35rem; font-weight:700; margin:0 0 10px; line-height:1.3; }
+  .meta { font-size:0.9rem; opacity:0.8; margin:4px 0 10px; }
+  .article img { width:100%; max-height:360px; object-fit:cover; border-radius:8px; margin:8px 0 12px; }
+  .desc { font-size:1.05rem; line-height:1.6; white-space:pre-wrap; }
+  .toggle { display:inline-block; margin-top:10px; padding:8px 14px; border-radius:999px; border:none; cursor:pointer; font-weight:600; background:#fff; transition: all .2s ease; }
+  .toggle:hover { background:#1e7b78f3; color:#fff; }
+  .inline-expanded { background:rgba(30,123,120,0.06); border-left:4px solid #1e7b78f3; padding:12px 14px; border-radius:8px; margin-top:10px; display:none; }
 
-    .btn {
-      padding: 12px 20px;
-      margin: 10px 5px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
+  .nav-buttons { text-align:center; margin:20px auto 40px; }
+  .nav-buttons button {
+    padding:10px 24px; margin:0 10px; font-size:1rem; font-weight:bold;
+    border:none; border-radius:999px; background:#fff; cursor:pointer; transition:all 0.3s ease;
+  }
+  .nav-buttons button:hover { background:#1e7b78f3; color:#fff; }
 
-    .btn.login {
-      background-color: #4285f4;
-      color: white;
-    }
+  footer { text-align:center; font-size:0.9rem; background:#000; color:white; padding:15px; }
 
-    .btn.signup {
-      background-color: #34a853;
-      color: white;
-    }
-
-    .btn.social {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #f1f1f1;
-      color: #333;
-      font-weight: 500;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin: 8px 0;
-      width: 100%;
-      transition: 0.3s;
-    }
-
-    .btn.social:hover {
-      background-color: #e2e2e2;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    input, select, textarea {
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    label {
-      text-align: left;
-      font-weight: bold;
-    }
-
-    .divider {
-      margin: 20px 0;
-      font-size: 14px;
-      color: #888;
-    }
-
-    .error {
-      color: red;
-      font-size: 14px;
-    }
-
-    .output {
-      text-align: left;
-      margin-top: 20px;
-    }
-
-    .password-wrapper {
-      position: relative;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .password-wrapper input {
-      width: 100%;
-      padding-right: 40px;
-      box-sizing: border-box;
-    }
-
-    .toggle-eye {
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 18px;
-      user-select: none;
-    }
-  </style>
+  /* Overlay styles */
+  .overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.7); display:none; justify-content:center; align-items:center;
+    z-index:9999; overflow-y:auto;
+  }
+  .box {
+    background:white; padding:30px; border-radius:12px;
+    width:350px; max-height:90%; overflow-y:auto; text-align:center;
+    box-shadow:0 5px 20px rgba(0,0,0,0.3);
+  }
+  .box h2 { margin-bottom:20px; }
+  .box input, .box select, .box textarea { width:90%; padding:10px; margin:8px 0; border:1px solid #ccc; border-radius:6px; }
+  .box button { margin-top:10px; width:95%; padding:10px; border:none; border-radius:6px; background:#1e7b78f3; color:white; font-weight:bold; cursor:pointer; }
+  .box button:hover { background:#145957; }
+  .password-wrapper { position:relative; width:100%; box-sizing:border-box; }
+  .password-wrapper input { width:100%; padding-right:40px; box-sizing:border-box; }
+  .toggle-eye { position:absolute; top:50%; right:10px; transform:translateY(-50%); cursor:pointer; font-size:18px; user-select:none; }
+</style>
 </head>
 <body>
 
-  <!-- Auth Section -->
-  <div class="section active" id="authSection">
-    <h2>Welcome to Our Site</h2>
-    <p>Please choose an option to continue</p>
-    <button class="btn login" onclick="showLogin()">Login</button>
-    <button class="btn signup" onclick="showSignup()">Sign Up</button>
-
-    <div class="divider">OR</div>
-
-    <!-- Updated Google and Facebook Buttons -->
-    <button class="btn social" onclick="redirectToGoogle()">
-      <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20">
-      Continue with Google
-    </button>
-    <button class="btn social" onclick="redirectToFacebook()">
-      <img src="https://www.svgrepo.com/show/475646/facebook-color.svg" width="20">
-      Continue with Facebook
-    </button>
+<header>
+  The Facts Time
+  <div class="auth-buttons">
+    <button onclick="openLogin()">Login</button>
+    <button onclick="openRegister()">Register</button>
   </div>
+</header>
+<div id="date">Loading date...</div>
 
-  <!-- Login Section -->
-  <div class="section" id="loginSection">
+<div class="menu">
+  <button onclick="showCategory(0)" class="active">Business</button>
+  <button onclick="showCategory(1)">Climate</button>
+  <button onclick="showCategory(2)">Crime</button>
+  <button onclick="showCategory(3)">Movies</button>
+  <button onclick="showCategory(4)">Sports</button>
+</div>
+
+<div id="news-container">Loading news...</div>
+
+<div class="nav-buttons">
+  <button id="prevBtn" onclick="prevTab()">Previous</button>
+  <button id="nextBtn" onclick="nextTab()">Next</button>
+</div>
+
+<footer>&copy; 2025 The Facts Time | All Rights Reserved</footer>
+
+<!-- Login Overlay -->
+<div class="overlay" id="loginOverlay">
+  <div class="box">
     <h2>Login</h2>
     <form id="loginForm">
-      <label>Email or Username</label>
-      <input type="text" id="loginUser" required>
-
-      <label>Password</label>
+      <input type="text" id="loginUser" placeholder="Username or Email" required>
       <div class="password-wrapper">
-        <input type="password" id="loginPass" required>
+        <input type="password" id="loginPass" placeholder="Password" required>
         <span class="toggle-eye" onclick="togglePassword('loginPass', this)">👁️</span>
       </div>
-
-      <p class="error" id="loginError"></p>
-
-      <button class="btn login" type="submit">Login</button>
-      <button class="btn signup" type="button" onclick="goBack()">Back</button>
+      <p id="loginError" style="color:red;"></p>
+      <button type="submit">Login</button>
+      <button type="button" onclick="closeLogin()">Back</button>
     </form>
   </div>
+</div>
 
-  <!-- Sign Up Section -->
-  <div class="section" id="signupSection">
-    <h2>Sign Up</h2>
-    <form id="signupForm">
-      <label>First Name</label>
-      <input type="text" id="fname" required oninput="capitalize(this)">
-
-      <label>Last Name</label>
-      <input type="text" id="lname" required oninput="capitalize(this)">
-
-      <label>Date of Birth</label>
-      <div style="display:flex; gap:10px;">
-        <select id="day" required></select>
-        <select id="month" required></select>
-        <select id="year" required></select>
-      </div>
-
-      <label>Gender</label>
-      <div>
-        <label><input type="radio" name="gender" value="Male" required> Male</label>
-        <label><input type="radio" name="gender" value="Female"> Female</label>
-        <label><input type="radio" name="gender" value="Other"> Other</label>
-      </div>
-
-      <label>Username</label>
-      <input type="text" id="username" required>
-
-      <label>Password</label>
+<!-- Register Overlay -->
+<div class="overlay" id="registerOverlay">
+  <div class="box">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <input type="text" id="fname" placeholder="First Name" required>
+      <input type="text" id="lname" placeholder="Last Name" required>
+      <label>Date of Birth:</label><br>
+      <select id="day" required></select>
+      <select id="month" required></select>
+      <select id="year" required></select><br>
+      <label>Gender:</label><br>
+      <input type="radio" name="gender" value="Male" required> Male
+      <input type="radio" name="gender" value="Female"> Female
+      <input type="radio" name="gender" value="Other"> Other<br>
+      <input type="text" id="regUser" placeholder="Username" required>
       <div class="password-wrapper">
-        <input type="password" id="password" required>
-        <span class="toggle-eye" onclick="togglePassword('password', this)">👁️</span>
+        <input type="password" id="regPass" placeholder="Password" required>
+        <span class="toggle-eye" onclick="togglePassword('regPass', this)">👁️</span>
       </div>
-
-      <label>Confirm Password</label>
       <div class="password-wrapper">
-        <input type="password" id="confirmPassword" required>
-        <span class="toggle-eye" onclick="togglePassword('confirmPassword', this)">👁️</span>
+        <input type="password" id="regConfirm" placeholder="Confirm Password" required>
+        <span class="toggle-eye" onclick="togglePassword('regConfirm', this)">👁️</span>
       </div>
-
-      <label>Address</label>
-      <textarea id="address" rows="3" required></textarea>
-
-      <p class="error" id="errorMsg"></p>
-      <button class="btn signup" type="submit">Register</button>
-      <button class="btn login" type="button" onclick="goBack()">Back</button>
+      <textarea id="address" rows="3" placeholder="Address" required></textarea>
+      <p id="regError" style="color:red;"></p>
+      <button type="submit">Register</button>
+      <button type="button" onclick="closeRegister()">Back</button>
     </form>
   </div>
+</div>
 
-  <!-- Output Section -->
-  <div class="section" id="outputSection">
-    <h2 id="greeting"></h2>
-    <div class="output" id="userDetails"></div>
-    <button class="btn login" onclick="location.reload()">Logout</button>
-  </div>
+<script>
+const apiKey="c6f4aa7f0316c81c76e7092b411c17d1";
+const categories=["Business","Climate","Crime","Movies","Sports"];
+let currentTab=0;
+const searchQueries={
+  Business:"business OR economy OR finance OR startup",
+  Climate:"climate OR environment OR pollution OR global warming",
+  Crime:"crime OR police OR fraud OR scam",
+  Movies:"Bollywood OR movies OR cinema OR film",
+  Sports:"cricket OR football OR sports OR tennis"
+};
+const newsCache={};
 
-  <script>
-    function showSignup() {
-      toggleSections('authSection', 'signupSection');
-    }
+// Show date
+document.getElementById('date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-    function showLogin() {
-      toggleSections('authSection', 'loginSection');
-    }
+// Overlays
+function openLogin(){document.getElementById('loginOverlay').style.display='flex';}
+function closeLogin(){document.getElementById('loginOverlay').style.display='none';}
+function openRegister(){document.getElementById('registerOverlay').style.display='flex'; populateDOB();}
+function closeRegister(){document.getElementById('registerOverlay').style.display='none';}
+function togglePassword(id){const input=document.getElementById(id);input.type=input.type==="password"?"text":"password";}
 
-    function goBack() {
-      document.getElementById('signupForm').reset();
-      document.getElementById('loginForm').reset();
-      document.getElementById('errorMsg').textContent = '';
-      document.getElementById('loginError').textContent = '';
-      toggleSections('signupSection', 'authSection');
-      toggleSections('loginSection', 'authSection');
-    }
+// Populate DOB
+function populateDOB(){
+  const day=document.getElementById('day'), month=document.getElementById('month'), year=document.getElementById('year');
+  if(day.options.length===0){
+    for(let i=1;i<=31;i++) day.add(new Option(i,i));
+    ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].forEach((m,i)=>month.add(new Option(m,i+1)));
+    const currentYear=new Date().getFullYear();
+    for(let y=currentYear;y>=1900;y--) year.add(new Option(y,y));
+  }
+}
 
-    function toggleSections(hideId, showId) {
-      document.getElementById(hideId).classList.remove('active');
-      document.getElementById(showId).classList.add('active');
-    }
+// Set logged in state
+function setLoggedIn(user){
+  document.querySelector('.auth-buttons').style.display='none';
+  let topRight=document.querySelector('header');
+  let div=document.createElement('div');
+  div.id='welcomeDiv';
+  div.style.position='absolute'; div.style.top='20px'; div.style.right='20px'; div.style.fontSize='0.9rem'; div.style.fontWeight='bold';
+  div.innerHTML=`Welcome, ${user} <button onclick="logout()" style="margin-left:8px;padding:5px 10px;border:none;border-radius:5px;background:#1e7b78;color:white;cursor:pointer;">Logout</button>`;
+  topRight.appendChild(div);
+}
 
-    function capitalize(input) {
-      input.value = input.value.replace(/\b\w/g, c => c.toUpperCase());
-    }
+function logout(){
+  localStorage.removeItem('username');
+  document.getElementById('welcomeDiv').remove();
+  document.querySelector('.auth-buttons').style.display='block';
+}
 
-    function togglePassword(id, icon) {
-      const input = document.getElementById(id);
-      const isPassword = input.type === "password";
-      input.type = isPassword ? "text" : "password";
-      icon.textContent = isPassword ? "🙈" : "👁️";
-    }
+// Check remembered user & auto-show overlay
+window.addEventListener('load', ()=>{
+  const remembered=localStorage.getItem('username');
+  if(remembered) setLoggedIn(remembered);
+  else setTimeout(showAuthChoiceOverlay, 5000); // auto-show after 5s
+});
 
-    function redirectToGoogle() {
-      window.location.href = "https://accounts.google.com/signin";
-    }
+// Create auth choice overlay
+function showAuthChoiceOverlay(){
+  const overlay=document.createElement('div');
+  overlay.id='authChoiceOverlay';
+  overlay.className='overlay';
+  overlay.style.display='flex';
+  const box=document.createElement('div');
+  box.className='box';
+  box.innerHTML=`
+    <h2>Welcome! Please Login or Register</h2>
+    <button onclick="openLogin(); closeAuthChoice()">Login</button>
+    <button onclick="openRegister(); closeAuthChoice()">Register</button>
+  `;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
 
-    function redirectToFacebook() {
-      window.location.href = "https://www.facebook.com/login";
-    }
+function closeAuthChoice(){
+  const overlay=document.getElementById('authChoiceOverlay');
+  if(overlay) overlay.remove();
+}
 
-    // Fill DOB dropdowns
-    const daySelect = document.getElementById('day');
-    const monthSelect = document.getElementById('month');
-    const yearSelect = document.getElementById('year');
+// Register form
+document.getElementById('registerForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const user=document.getElementById('regUser').value.trim();
+  const fname=document.getElementById('fname').value.trim();
+  const lname=document.getElementById('lname').value.trim();
+  alert(`Registration successful!\nWelcome ${fname} ${lname}`);
+  closeRegister();
+  setLoggedIn(user);
+});
 
-    for (let i = 1; i <= 31; i++) {
-      let opt = document.createElement('option');
-      opt.value = opt.text = i;
-      daySelect.appendChild(opt);
-    }
+// Login form
+document.getElementById('loginForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const user=document.getElementById('loginUser').value.trim();
+  alert(`Login successful! Welcome back ${user}`);
+  closeLogin();
+  setLoggedIn(user);
+});
 
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    months.forEach((m, i) => {
-      let opt = document.createElement('option');
-      opt.value = i + 1;
-      opt.text = m;
-      monthSelect.appendChild(opt);
-    });
+// News tabs
+function showCategory(index){
+  currentTab=index;
+  document.querySelectorAll(".menu button").forEach((btn,i)=>btn.classList.toggle("active",i===index));
+  document.getElementById("prevBtn").disabled=index===0;
+  document.getElementById("nextBtn").disabled=index===categories.length-1;
+  if(newsCache[categories[index]]) renderNews(newsCache[categories[index]]);
+  else fetchNews(categories[index]);
+}
+function prevTab(){if(currentTab>0) showCategory(currentTab-1);}
+function nextTab(){if(currentTab<categories.length-1) showCategory(currentTab+1);}
+async function fetchNews(category){
+  const query=searchQueries[category];
+  const url=`https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&country=in&max=6&apikey=${apiKey}`;
+  const container=document.getElementById("news-container");
+  container.innerHTML="Loading news...";
+  try{
+    const res=await fetch(url); const data=await res.json();
+    newsCache[category]=data; renderNews(data,category);
+  }catch(err){container.innerHTML=`<p style="color:red;">Error: ${err.message}</p>`;}
+}
+function renderNews(data,category){
+  const container=document.getElementById("news-container"); container.style.display="block";
+  if(!data.articles||data.articles.length===0){container.innerHTML=`<p>No news found for <strong>${category}</strong>.</p>`; return;}
+  container.innerHTML=`<div style="text-transform:uppercase;font-weight:bold;margin-bottom:10px;">${category}</div>`;
+  data.articles.forEach(a=>{
+    const div=document.createElement("div"); div.className="article";
+    div.innerHTML=`<h3>${a.title}</h3>
+      <div class="meta">${a.source?.name||""} · ${new Date(a.publishedAt).toLocaleString()}</div>
+      ${a.image?`<img src="${a.image}" onerror="this.style.display='none'">`:''}
+      <div class="desc">${a.description||'No description available.'}</div>
+      <div class="inline-expanded">${a.content||'Full content not available.'}</div>
+      <button class="toggle">Read more</button>`;
+    const toggleBtn=div.querySelector(".toggle"); const expanded=div.querySelector(".inline-expanded");
+    toggleBtn.addEventListener("click",()=>{const hidden=expanded.style.display===''||expanded.style.display==='none';expanded.style.display=hidden?'block':'none';toggleBtn.textContent=hidden?'Show less':'Read more';});
+    container.appendChild(div);
+  });
+}
 
-    const currentYear = new Date().getFullYear();
-    for (let i = currentYear; i >= 1900; i--) {
-      let opt = document.createElement('option');
-      opt.value = opt.text = i;
-      yearSelect.appendChild(opt);
-    }
+// Initialize
+showCategory(0);
+</script>
 
-    // Signup handler
-    const signupForm = document.getElementById('signupForm');
-    const errorMsg = document.getElementById('errorMsg');
-
-    signupForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-
-      const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
-      const numberRegex = /[0-9]/;
-
-      if (password !== confirmPassword) {
-        errorMsg.textContent = "Passwords do not match!";
-        return;
-      }
-
-      if (password.length < 8 || !specialCharRegex.test(password) || !numberRegex.test(password)) {
-        errorMsg.textContent = "Password must be at least 8 characters, include a number & special character.";
-        return;
-      }
-
-      errorMsg.textContent = "";
-
-      const details = `
-        <strong>Name:</strong> ${document.getElementById('fname').value} ${document.getElementById('lname').value}<br>
-        <strong>DOB:</strong> ${daySelect.value}-${monthSelect.value}-${yearSelect.value}<br>
-        <strong>Gender:</strong> ${document.querySelector('input[name="gender"]:checked').value}<br>
-        <strong>Username:</strong> ${document.getElementById('username').value}<br>
-        <strong>Address:</strong> ${document.getElementById('address').value}
-      `;
-
-      document.getElementById('userDetails').innerHTML = details;
-
-      const hour = new Date().getHours();
-      let greet = "Good Evening!";
-      if (hour < 12) greet = "Good Morning!";
-      else if (hour < 17) greet = "Good Afternoon!";
-      document.getElementById('greeting').textContent = greet;
-
-      toggleSections('signupSection', 'outputSection');
-    });
-
-    // Login handler
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const user = document.getElementById('loginUser').value;
-      const pass = document.getElementById('loginPass').value;
-      const loginError = document.getElementById('loginError');
-
-      if (!user || !pass) {
-        loginError.textContent = "Please enter both fields.";
-        return;
-      }
-
-      loginError.textContent = "";
-      document.getElementById('userDetails').innerHTML = `<strong>Username:</strong> ${user}`;
-      document.getElementById('greeting').textContent = "Welcome back!";
-      toggleSections('loginSection', 'outputSection');
-    });
-  </script>
 </body>
 </html>
