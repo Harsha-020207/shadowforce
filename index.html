@@ -5,31 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>The Facts Time</title>
 <style>
+  /* Body and header */
   body { margin:0; background:#e0e0e0; font-family:Georgia, serif; color:#000; }
   header {
     background: transparent; color:#000; text-align:center;
     padding:20px; font-size:2.5rem; text-transform:uppercase;
     letter-spacing:2px; position:relative;
   }
+
   /* Top-right auth buttons */
   .auth-buttons { position:absolute; top:20px; right:20px; }
   .auth-buttons button {
     margin-left:8px; padding:8px 16px; font-size:0.9rem;
     font-weight:bold; border:none; border-radius:999px;
-    background:#1e7b78f3; color:white; cursor:pointer;
-    transition: all 0.3s ease;
+    background:#1e7b78f3; color:white; cursor:pointer; transition: all 0.3s ease;
   }
   .auth-buttons button:hover { background:#145957; }
 
+  /* Date display */
   #date { text-align:center; font-size:1rem; margin-bottom:10px; }
+
+  /* Menu buttons */
   .menu { text-align:center; padding:20px 10px; }
   .menu button {
     margin:5px 10px; padding:10px 24px; font-size:1rem; font-weight:bold;
     border:none; background:#fff; color:#000; cursor:pointer; border-radius:999px;
     transition: all 0.3s ease; box-shadow:0 2px 5px rgba(0,0,0,0.1);
   }
-  .menu button:hover, .menu button.active { background:#1e7b78f3; color:#fff; box-shadow:0 0 12px #1e7b78f3; }
+  .menu button:hover, .menu button.active { 
+    background:#1e7b78f3; color:#fff; box-shadow:0 0 12px #1e7b78f3; 
+  }
 
+  /* News container */
   #news-container {
     max-width:900px; margin:30px auto; background:rgba(255,255,255,0.7);
     padding:40px 30px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1);
@@ -45,6 +52,7 @@
   .toggle:hover { background:#1e7b78f3; color:#fff; }
   .inline-expanded { background:rgba(30,123,120,0.06); border-left:4px solid #1e7b78f3; padding:12px 14px; border-radius:8px; margin-top:10px; display:none; }
 
+  /* Navigation buttons */
   .nav-buttons { text-align:center; margin:20px auto 40px; }
   .nav-buttons button {
     padding:10px 24px; margin:0 10px; font-size:1rem; font-weight:bold;
@@ -52,9 +60,10 @@
   }
   .nav-buttons button:hover { background:#1e7b78f3; color:#fff; }
 
+  /* Footer */
   footer { text-align:center; font-size:0.9rem; background:#000; color:white; padding:15px; }
 
-  /* Overlay styles */
+  /* Overlay for login/register */
   .overlay {
     position:fixed; top:0; left:0; width:100%; height:100%;
     background:rgba(0,0,0,0.7); display:none; justify-content:center; align-items:center;
@@ -164,17 +173,25 @@ const searchQueries={
 };
 const newsCache={};
 
-// Show date
-document.getElementById('date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+/* ----------- Display current date ----------- */
+document.getElementById('date').textContent=new Date().toLocaleDateString(undefined,{
+  weekday:'long',year:'numeric',month:'long',day:'numeric'
+});
 
-// Overlays
-function openLogin(){document.getElementById('loginOverlay').style.display='flex';}
-function closeLogin(){document.getElementById('loginOverlay').style.display='none';}
-function openRegister(){document.getElementById('registerOverlay').style.display='flex'; populateDOB();}
-function closeRegister(){document.getElementById('registerOverlay').style.display='none';}
-function togglePassword(id){const input=document.getElementById(id);input.type=input.type==="password"?"text":"password";}
+/* ----------- Overlay functions ----------- */
+function openLogin(){ document.getElementById('loginOverlay').style.display='flex'; }
+function closeLogin(){ document.getElementById('loginOverlay').style.display='none'; }
+function openRegister(){ 
+  document.getElementById('registerOverlay').style.display='flex'; 
+  populateDOB(); 
+}
+function closeRegister(){ document.getElementById('registerOverlay').style.display='none'; }
+function togglePassword(id){ 
+  const input=document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password"; 
+}
 
-// Populate DOB
+/* ----------- Populate DOB ----------- */
 function populateDOB(){
   const day=document.getElementById('day'), month=document.getElementById('month'), year=document.getElementById('year');
   if(day.options.length===0){
@@ -185,7 +202,7 @@ function populateDOB(){
   }
 }
 
-// Set logged in state
+/* ----------- Login/Register state ----------- */
 function setLoggedIn(user){
   document.querySelector('.auth-buttons').style.display='none';
   let topRight=document.querySelector('header');
@@ -202,14 +219,13 @@ function logout(){
   document.querySelector('.auth-buttons').style.display='block';
 }
 
-// Check remembered user & auto-show overlay
+/* ----------- Auto-show login/register overlay after 5s ----------- */
 window.addEventListener('load', ()=>{
   const remembered=localStorage.getItem('username');
   if(remembered) setLoggedIn(remembered);
-  else setTimeout(showAuthChoiceOverlay, 5000); // auto-show after 5s
+  else setTimeout(showAuthChoiceOverlay, 5000);
 });
 
-// Create auth choice overlay
 function showAuthChoiceOverlay(){
   const overlay=document.createElement('div');
   overlay.id='authChoiceOverlay';
@@ -231,7 +247,7 @@ function closeAuthChoice(){
   if(overlay) overlay.remove();
 }
 
-// Register form
+/* ----------- Login/Register form submit ----------- */
 document.getElementById('registerForm').addEventListener('submit',function(e){
   e.preventDefault();
   const user=document.getElementById('regUser').value.trim();
@@ -242,7 +258,6 @@ document.getElementById('registerForm').addEventListener('submit',function(e){
   setLoggedIn(user);
 });
 
-// Login form
 document.getElementById('loginForm').addEventListener('submit',function(e){
   e.preventDefault();
   const user=document.getElementById('loginUser').value.trim();
@@ -251,7 +266,7 @@ document.getElementById('loginForm').addEventListener('submit',function(e){
   setLoggedIn(user);
 });
 
-// News tabs
+/* ----------- News functions ----------- */
 function showCategory(index){
   currentTab=index;
   document.querySelectorAll(".menu button").forEach((btn,i)=>btn.classList.toggle("active",i===index));
@@ -260,8 +275,10 @@ function showCategory(index){
   if(newsCache[categories[index]]) renderNews(newsCache[categories[index]]);
   else fetchNews(categories[index]);
 }
-function prevTab(){if(currentTab>0) showCategory(currentTab-1);}
-function nextTab(){if(currentTab<categories.length-1) showCategory(currentTab+1);}
+
+function prevTab(){ if(currentTab>0) showCategory(currentTab-1); }
+function nextTab(){ if(currentTab<categories.length-1) showCategory(currentTab+1); }
+
 async function fetchNews(category){
   const query=searchQueries[category];
   const url=`https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=en&country=in&max=6&apikey=${apiKey}`;
@@ -270,27 +287,38 @@ async function fetchNews(category){
   try{
     const res=await fetch(url); const data=await res.json();
     newsCache[category]=data; renderNews(data,category);
-  }catch(err){container.innerHTML=`<p style="color:red;">Error: ${err.message}</p>`;}
+  }catch(err){ container.innerHTML=`<p style="color:red;">Error: ${err.message}</p>`; }
 }
+
 function renderNews(data,category){
-  const container=document.getElementById("news-container"); container.style.display="block";
-  if(!data.articles||data.articles.length===0){container.innerHTML=`<p>No news found for <strong>${category}</strong>.</p>`; return;}
+  const container=document.getElementById("news-container"); 
+  container.style.display="block";
+  if(!data.articles||data.articles.length===0){
+    container.innerHTML=`<p>No news found for <strong>${category}</strong>.</p>`; 
+    return;
+  }
   container.innerHTML=`<div style="text-transform:uppercase;font-weight:bold;margin-bottom:10px;">${category}</div>`;
   data.articles.forEach(a=>{
     const div=document.createElement("div"); div.className="article";
-    div.innerHTML=`<h3>${a.title}</h3>
+    div.innerHTML=`
+      <h3>${a.title}</h3>
       <div class="meta">${a.source?.name||""} · ${new Date(a.publishedAt).toLocaleString()}</div>
       ${a.image?`<img src="${a.image}" onerror="this.style.display='none'">`:''}
       <div class="desc">${a.description||'No description available.'}</div>
       <div class="inline-expanded">${a.content||'Full content not available.'}</div>
       <button class="toggle">Read more</button>`;
-    const toggleBtn=div.querySelector(".toggle"); const expanded=div.querySelector(".inline-expanded");
-    toggleBtn.addEventListener("click",()=>{const hidden=expanded.style.display===''||expanded.style.display==='none';expanded.style.display=hidden?'block':'none';toggleBtn.textContent=hidden?'Show less':'Read more';});
+    const toggleBtn=div.querySelector(".toggle"); 
+    const expanded=div.querySelector(".inline-expanded");
+    toggleBtn.addEventListener("click",()=>{
+      const hidden=expanded.style.display===''||expanded.style.display==='none';
+      expanded.style.display=hidden?'block':'none';
+      toggleBtn.textContent=hidden?'Show less':'Read more';
+    });
     container.appendChild(div);
   });
 }
 
-// Initialize
+// Initialize first category
 showCategory(0);
 </script>
 
