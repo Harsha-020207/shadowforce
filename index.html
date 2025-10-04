@@ -11,12 +11,31 @@ header { background: transparent; color:#000; text-align:center; padding:20px; f
 .auth-buttons { position:absolute; top:20px; right:20px; display:flex; }
 .auth-buttons button { margin-left:8px; padding:8px 16px; font-size:0.9rem; font-weight:bold; border:none; border-radius:999px; background:#1e7b78f3; color:white; cursor:pointer; }
 /* Profile Container now correctly positioned on the right to replace auth-buttons */
-#profileContainer { display:none; position:absolute; top:20px; right:20px; cursor:pointer; padding: 8px 12px; background: #fff; border-radius: 999px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
-#profileIcon { font-size: 1.2rem; }
+#profileContainer { 
+    display:none; 
+    position:absolute; 
+    top:15px; /* Adjusted top position */
+    right:20px; 
+    cursor:pointer; 
+    padding: 0; /* Remove padding to size the image container */
+    width: 45px; /* Define size */
+    height: 45px; /* Define size */
+    background: #fff; 
+    border-radius: 50%; /* Make it perfectly round */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 2px solid #1e7b78f3; /* Teal border for styling */
+    background-size: cover; /* Important for image display */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat;
+    /* Default icon style (if no image is set) */
+    line-height: 40px; 
+    text-align: center;
+}
+#profileIcon { font-size: 1.5rem; color: #1e7b78f3; } /* Increased size for placeholder */
 #date { text-align:center; font-size:1rem; margin-bottom:10px; }
 .menu { text-align:center; padding:20px 10px; }
 .menu button { margin:5px 10px; padding:10px 24px; font-size:1rem; font-weight:bold; border:none; background:#fff; color:#000; cursor:pointer; border-radius:999px; }
-.menu button.active { background:#1e7b78f3; color:#fff; }
+.menu button.active { background:#1e7b78f3; color:#fff; } /* ONLY Category buttons use this class */
 #news-container { max-width:900px; margin:30px auto; background:rgba(255,255,255,0.7); padding:40px 30px; border-radius:12px; min-height:200px; display:none; }
 .article { margin-bottom:28px; padding-bottom:18px; border-bottom:1px solid rgba(0,0,0,0.08); }
 .article:last-child { border-bottom:none; }
@@ -272,10 +291,11 @@ body {
 
 <div class="menu">
   <button onclick="showCategory(0)" class="active">Business</button>
-  <button onclick="showCategory(1)">Environment</button>
-  <button onclick="showCategory(2)">Crime</button>
-  <button onclick="showCategory(3)">Movies</button>
-  <button onclick="showCategory(4)">Sports</button>
+  <button onclick="showCategory(1)">Politics</button>
+  <button onclick="showCategory(2)">Environment</button>
+  <button onclick="showCategory(3)">Crime</button>
+  <button onclick="showCategory(4)">Movies</button>
+  <button onclick="showCategory(5)">Sports</button>
 </div>
 
 <div id="news-container">Loading news...</div>
@@ -343,7 +363,7 @@ body {
         
     </div>
         
-  </div>
+</div>
 </div>
 
 <!-- Profile Modal -->
@@ -351,16 +371,16 @@ body {
   <div style="background:white; padding:30px; border-radius:12px; width:400px; max-width:90%; position:relative; text-align:center;">
     <a href="#" onclick="hideProfileModal(); return false;" style="position:absolute; top:10px; right:15px;font-size:1.5rem; text-decoration:none; color:#000;">&times;</a>
     <h2>User Profile </h2>
-    <!-- Profile Picture Section -->
-    <img id="profileImage" src="https://placehold.co/80x80/cccccc/000000?text=👤" alt="Profile Picture">
-    <input type="file" id="profilePictureInput" accept="image/*" onchange="uploadProfilePicture()" style="width:100%; padding:10px 0; margin-bottom: 20px; border:none;">
+    <!-- Profile Picture Section -->
+    <img id="profileImage" src="https://placehold.co/80x80/cccccc/000000?text=👤" alt="Profile Picture">
+    <input type="file" id="profilePictureInput" accept="image/*" onchange="uploadProfilePicture()" style="width:100%; padding:10px 0; margin-bottom: 20px; border:none;">
 
     <input type="text" id="profileNameInput" placeholder="Full Name" style="width:100%; padding:10px; margin:10px 0;">
     <input type="email" id="profileEmailDisplay" placeholder="Email" disabled style="width:100%; padding:10px; margin:10px 0; background:#f5f5f5;">
     <input type="text" id="profileAddressInput" placeholder="Address" style="width:100%; padding:10px; margin:10px 0;">
-    
-    <!-- Reset Password Button for Profile -->
-    <button class="reset-button" onclick="sendPasswordResetEmail(document.getElementById('profileEmailDisplay').value, false)">Reset Password</button>
+    
+    <!-- Reset Password Button for Profile -->
+    <button class="reset-button" onclick="sendPasswordResetEmail(document.getElementById('profileEmailDisplay').value, false)">Reset Password</button>
 
     <button onclick="updateProfile()" style="width:100%; padding:10px; background:#1e7b78f3; color:white;">Save Profile</button>
     <button onclick="logout()" style="width:100%; padding:10px; background:#dc3545; color:white; margin-top:5px;">Sign Out</button>
@@ -368,23 +388,23 @@ body {
 </div>
 
 <!-- NEW: Reset Password Modal (Shown after clicking email link) -->
-<div id="resetPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: white; justify-content:center; align-items:flex-start; z-index:12000;">
+<div id="resetPasswordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: white; justify-content:center; align-items:center; z-index:12000;">
   <div style="width: 100%; text-align: center; padding: 20px 0; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; font-family: Georgia, serif;">The Facts Time</div>
   <div style="background:white; padding:40px; border-radius:24px; width:380px; max-width:90%; margin-top: 50px; text-align:center; position:relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-left: auto; margin-right: auto;">
     <h2>Set New Password</h2>
-    <p style="text-align: left; margin-bottom: 20px;">Please enter and confirm your new password.</p>
+    <p style="text-align: left; margin-bottom: 20px;">Please enter and confirm your new password.</p>
 
-    <!-- New Password Field -->
-    <div class="password-container" style="margin-bottom: 10px;">
-        <input id="newPassword" type="password" placeholder="New Password">
-        <span class="toggle-icon" onclick="togglePasswordVisibility('newPassword', this)">👁️</span>
-    </div>
+    <!-- New Password Field -->
+    <div class="password-container" style="margin-bottom: 10px;">
+        <input id="newPassword" type="password" placeholder="New Password">
+        <span class="toggle-icon" onclick="togglePasswordVisibility('newPassword', this)">👁️</span>
+    </div>
 
-    <!-- Confirm Password Field -->
-    <div class="password-container">
-        <input id="confirmNewPassword" type="password" placeholder="Confirm New Password">
-        <span class="toggle-icon" onclick="togglePasswordVisibility('confirmNewPassword', this)">👁️</span>
-    </div>
+    <!-- Confirm Password Field -->
+    <div class="password-container">
+        <input id="confirmNewPassword" type="password" placeholder="Confirm New Password">
+        <span class="toggle-icon" onclick="togglePasswordVisibility('confirmNewPassword', this)">👁️</span>
+    </div>
 
     <button onclick="resetPassword()">Confirm New Password</button>
   </div>
@@ -415,7 +435,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const GNEWS_API_KEY = "5e87c4dd587f05db54841840360563bd"; 
 const proxy = "https://api.allorigins.win/raw?url="; 
 
-const categories = ["business","environment","crime","movies","sports"];
+const categories = ["business","politics","environment","crime","movies","sports"];
 let currentTab = 0;
 let currentUserId = null;
 let autoLockActive = false; // Lock to prevent closing the overlay
@@ -425,12 +445,12 @@ let autoLockActive = false; // Lock to prevent closing the overlay
 const overlay = document.getElementById('overlay');
 
 function openLogin(){ 
-    overlay.style.display='flex'; 
-    switchTab('login'); 
+    overlay.style.display='flex'; 
+    switchTab('login'); 
 }
 function openRegister(){ 
-    overlay.style.display='flex'; 
-    switchTab('register'); 
+    overlay.style.display='flex'; 
+    switchTab('register'); 
 }
 
 /**
@@ -498,7 +518,17 @@ async function showCategory(index){
   container.style.display='block';
   
   const categoryName = categories[index];
-  const gnewsUrl = `https://gnews.io/api/v4/top-headlines?topic=${categoryName}&lang=en&token=${GNEWS_API_KEY}&max=10`;
+  
+  // *** MAPPING CATEGORY NAME TO A MORE EFFECTIVE SEARCH TERM FOR GNEWS ***
+  let searchTerm = categoryName;
+  if (categoryName === 'politics') searchTerm = 'Indian politics';
+  else if (categoryName === 'environment') searchTerm = 'Indian environmental issues';
+  else if (categoryName === 'crime') searchTerm = 'Indian crime news';
+  else if (categoryName === 'movies') searchTerm = 'Bollywood cinema';
+  
+  // *** FIX: Use 'q' (query) parameter instead of 'topic' to force specific results ***
+  const gnewsUrl = `https://gnews.io/api/v4/search?q=${searchTerm}&lang=en&country=in&token=${GNEWS_API_KEY}&max=10`;
+  
   // FIX: Use the proxy to hide the origin for external API access
   const url = proxy + encodeURIComponent(gnewsUrl);
   
@@ -684,7 +714,7 @@ async function registerUser(){
     showMessage("Error: Passwords do not match.");
     return;
   }
-  
+
   // START LOADING STATE
   registerBtn.disabled = true;
   registerBtn.innerText = 'Signing Up...';
@@ -750,6 +780,8 @@ async function loginUser(){
     // MODIFIED: Hide overlay AFTER setProfileUI confirms session/stops interval
     await setProfileUI(data.user); // Await the UI setup
     hideOverlay(null, true); // Force hide after successful process
+    // ADDED: Show success message after successful login
+    showMessage("Login successful!");
   } catch (e) {
       showMessage(`An unexpected error occurred: ${e.message}`);
   } finally {
@@ -780,7 +812,20 @@ async function setProfileUI(user){
     document.getElementById('profileEmailDisplay').value=data.email||user.email||'';
     document.getElementById('profileAddressInput').value=data.address_line1||''; // CORRECTED COLUMN NAME
     const profileImageUrl = data.avatar_url;
-    document.getElementById('profileImage').src = profileImageUrl || 'https://placehold.co/80x80/cccccc/000000?text=👤';
+    
+    // Header Icon Update Logic
+    const profileContainer = document.getElementById('profileContainer');
+    if (profileImageUrl) {
+        profileContainer.style.backgroundImage = `url('${profileImageUrl}')`;
+        document.getElementById('profileIcon').style.display = 'none';
+    } else {
+        profileContainer.style.backgroundImage = 'none';
+        document.getElementById('profileIcon').style.display = 'inline';
+    }
+
+    // Update the image in the modal as well
+    document.getElementById('profileImage').src = profileImageUrl || 'https://placehold.co/80x80/cccccc/000000?text=👤';
+
   } else {
     // If profile data is missing (e.g., first OAuth login or RLS failed previously)
     // Attempt to create a minimal profile entry.
@@ -854,6 +899,11 @@ async function saveProfilePictureUrl(url) {
         return;
     }
 
+    // Update the header icon display
+    const profileContainer = document.getElementById('profileContainer');
+    profileContainer.style.backgroundImage = `url('${url}')`;
+    document.getElementById('profileIcon').style.display = 'none';
+
     // Update the image in the modal immediately
     document.getElementById('profileImage').src = url;
     showMessage('Profile picture updated successfully!');
@@ -882,11 +932,13 @@ async function updateProfile(){
 
 async function logout(){ 
   await supabase.auth.signOut(); 
+  // ADDED: Show success message before reloading
+  showMessage("Logged out successfully!");
   // Rerun initialization after logout to restart the prompt interval
   location.reload(); 
 }
 
-// NEW: Function to check login status and prompt (called repeatedly by interval)
+// Function to check login status and prompt (called repeatedly by interval)
 async function promptLoginIfNecessary() {
     const { data: { session } } = await supabase.auth.getSession();
     
@@ -952,7 +1004,6 @@ function initializeApp() {
 
 // Initializing the client after the variables are set up
 document.addEventListener('DOMContentLoaded', () => {
-    // FIX: Using window.supabase ensures the external script is available
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     initializeApp();
     
