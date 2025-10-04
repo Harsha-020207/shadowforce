@@ -426,6 +426,9 @@ body {
 let supabase;
 // Global variable to store the interval ID
 let loginPromptInterval = null; 
+// Store callback function to run on message dismissal
+let messageCallback = null; 
+
 
 // --- Supabase Configuration (Anon Public Key) ---
 const SUPABASE_URL = "https://slaomsvxltbgvhimhowq.supabase.co";
@@ -471,12 +474,24 @@ function hideOverlay(event, forceClose = false){
 
 function openProfileModal(){ document.getElementById('profileModal').style.display='flex'; }
 function hideProfileModal(){ document.getElementById('profileModal').style.display='none'; }
-function showMessage(text) {
+
+/**
+ * Shows the custom message modal.
+ * @param {string} text The message to display.
+ * @param {function} callback Optional function to run when the message is dismissed.
+ */
+function showMessage(text, callback = null) {
   document.getElementById('messageText').innerText = text;
   document.getElementById('messageModal').style.display = 'flex';
+  messageCallback = callback; // Store the callback
 }
+
 function hideMessage() {
   document.getElementById('messageModal').style.display = 'none';
+  if (messageCallback) {
+    messageCallback(); // Execute callback (e.g., location.reload)
+    messageCallback = null; // Clear it
+  }
 }
 
 
@@ -680,9 +695,10 @@ async function resetPassword() {
         if (error) {
             showMessage(`Password reset failed: ${error.message}`);
         } else {
-            showMessage('Success! Your password has been updated. You can now log in.');
-            // Reload the page to clear the recovery hash and restart the app normally
-            window.location.href = window.location.origin;
+            // Success: Show message, then reload when user dismisses the message
+            showMessage('Success! Your password has been updated. You can now log in.', () => {
+                window.location.href = window.location.origin;
+            });
         }
     } catch (e) {
         showMessage(`An unexpected error occurred: ${e.message}`);
@@ -780,6 +796,7 @@ async function loginUser(){
     // MODIFIED: Hide overlay AFTER setProfileUI confirms session/stops interval
     await setProfileUI(data.user); // Await the UI setup
     hideOverlay(null, true); // Force hide after successful process
+    
     // ADDED: Show success message after successful login
     showMessage("Login successful!");
   } catch (e) {
@@ -932,10 +949,17 @@ async function updateProfile(){
 
 async function logout(){ 
   await supabase.auth.signOut(); 
-  // ADDED: Show success message before reloading
-  showMessage("Logged out successfully!");
-  // Rerun initialization after logout to restart the prompt interval
-  location.reload(); 
+  
+  // FIX: Manually reset UI to unauthenticated state immediately
+  document.getElementById('profileContainer').style.display='none';
+  document.querySelector('.auth-buttons').style.display='flex';
+  
+  // ADDED: Show success message BEFORE reloading, passing reload function as callback
+  showMessage("Logged out successfully!", () => {
+      location.reload(); 
+  });
+  
+  // Removed direct location.reload() here. It now runs via the callback.
 }
 
 // Function to check login status and prompt (called repeatedly by interval)
